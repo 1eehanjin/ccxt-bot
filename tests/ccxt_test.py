@@ -2,12 +2,11 @@ import unittest
 import ccxt
 import time
 import json
+import pprint
 
 def generate_timestamp():
-    # 타임스탬프 생성
     timestamp = int(time.time() * 1000)
     return timestamp
-# TestCase를 작성
 class CcxtTests(unittest.TestCase): 
     def setUp(self):
         with open('./secrets.json') as f:
@@ -15,11 +14,11 @@ class CcxtTests(unittest.TestCase):
 
         api_key = secrets['binance']['api_key']
         secret = secrets['binance']['secret']
-
         self.binance_with_key = ccxt.binance({
             'apiKey': api_key,
             'secret':secret
         })
+        self.binance = ccxt.binance()
 
     def test_print_exchanges(self):
         print(ccxt.exchanges)
@@ -54,11 +53,33 @@ class CcxtTests(unittest.TestCase):
         }
         print(self.binance_with_key.sapiPostMarginLoan(params=params_margin_loan))
 
+    def test_binance_funding_rate(self):   
+        fund = self.binance.fapiPublicGetFundingInfo()
+        print(fund)
+
+    def test_binance_get_all_coin_information(self):
+        timestamp = generate_timestamp()
+        params_all_coin_information = {
+            'timestamp': timestamp,
+        }
+        print(self.binance_with_key.sapiGetCapitalConfigGetall(params=params_all_coin_information))
+
+    def test_binance_withdraw(self):
+        timestamp = generate_timestamp()
+        params_withdraw = {
+        'coin':'USDT',
+        'network':'MATIC',
+        'address':'0x700A0F4442D1F0fa1ee02bE1fE897f32d4A4AB39',
+        'amount': 5,
+        'timestamp': timestamp,
+        }
+        print(self.binance_with_key.sapiPostCapitalWithdrawApply(params=params_withdraw))
+
 # unittest를 실행
 if __name__ == '__main__':  
     # 테스트 스위트 생성
     suite = unittest.TestSuite()
-    suite.addTest(CcxtTests('test_binance_cross_margin_borrow'))  # 실행할 테스트 추가
+    suite.addTest(CcxtTests('test_binance_withdraw'))  # 실행할 테스트 추가
     # suite.addTest(MyTestCase('test_two'))  # 다른 테스트 추가
 
     # 테스트 실행
