@@ -39,7 +39,7 @@ class CcxtBinance():
         }
         return(self.binance_with_key.sapiPostMarginLoan(params=params_margin_loan))
     
-    def on_new_coin_listing_detected(symbols):
+    def on_new_coin_listing_detected(self, symbols):
         for symbol in symbols:
                 ccxtBinance.binance_borrow_all(symbol)
 
