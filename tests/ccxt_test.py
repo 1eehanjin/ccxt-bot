@@ -67,10 +67,10 @@ class CcxtTests(unittest.TestCase):
     def test_binance_withdraw(self):
         timestamp = generate_timestamp()
         params_withdraw = {
-        'coin':'USDT',
-        'network':'MATIC',
-        'address':'0x700A0F4442D1F0fa1ee02bE1fE897f32d4A4AB39',
-        'amount': 5,
+        'coin':'HIGH',
+        'network':'BSC',
+        'address':'0x8dd0f272737b908b8ADcb931fD38145265154cF3',
+        'amount': 40,
         'timestamp': timestamp,
         }
         print(self.binance_with_key.sapiPostCapitalWithdrawApply(params=params_withdraw))
