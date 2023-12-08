@@ -8,8 +8,9 @@ import requests
 def generate_timestamp():
     timestamp = int(time.time() * 1000)
     return timestamp
+
 class CcxtBinance(): 
-    def setUp(self):
+    def __init__(self):
         with open('./secrets.json') as f:
             secrets = json.load(f)
 
@@ -45,5 +46,4 @@ class CcxtBinance():
 
 if __name__ == '__main__':  
     ccxtBinance = CcxtBinance()
-    ccxtBinance.setUp()
     ccxtBinance.keep_binance_withdraw()
