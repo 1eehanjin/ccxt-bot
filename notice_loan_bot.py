@@ -3,6 +3,7 @@ import upbit_notice_crawler
 import time
 import ccxt
 import math
+import message_sender
 
 def generate_timestamp():
     timestamp = int(time.time() * 1000)
@@ -28,7 +29,7 @@ class CcxtBinance():
 
     def binance_borrow_all(self, symbol):
         self.binance_loan_borrow(symbol)
-        self.binance_cross_margin_borrow(symbol, 1)
+        self.binance_cross_margin_borrow(symbol, 1) #TODO: 수량 계산해야함 !
 
     def binance_loan_borrow(self, symbol):
         timestamp = generate_timestamp()
@@ -41,7 +42,7 @@ class CcxtBinance():
         }
         print("바이낸스 loan" + str(params_loan_borrow))
         result_message = self.binance_with_key.sapiPostLoanFlexibleBorrow(params=params_loan_borrow)
-        print(result_message)
+        message_sender.send_telegram_message(result_message)
         return(result_message)
     
     def binance_calculate_colleteral_max_limit(self, symbol):
@@ -72,9 +73,6 @@ class CcxtBinance():
         }
         return(self.binance_with_key.sapiPostMarginLoan(params=params_margin_loan))
     
-
-
-
 
 if __name__ == '__main__': 
     upbit_notice_crawler = upbit_notice_crawler.UpbitNoticeCrawler()

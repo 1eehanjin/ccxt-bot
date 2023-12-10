@@ -22,7 +22,16 @@ class CcxtBinance():
         })
         self.binance = ccxt.binance()
 
- 
+    def keep_binance_withdraw(self):
+        while True:
+            try:
+                self.binance_withdraw()
+                break
+            except Exception as e: 
+                print('예외가 발생했습니다.', e)
+                time.sleep(0.2)
+
+
     def binance_withdraw(self):
         timestamp = generate_timestamp()
         params_withdraw = {
@@ -34,14 +43,6 @@ class CcxtBinance():
         }
         print(self.binance_with_key.sapiPostCapitalWithdrawApply(params=params_withdraw))
 
-    def keep_binance_withdraw(self):
-        while True:
-            try:
-                self.binance_withdraw()
-                break
-            except Exception as e: 
-                print('예외가 발생했습니다.', e)
-                time.sleep(0.2)
 
 
 if __name__ == '__main__':  
