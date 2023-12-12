@@ -45,13 +45,12 @@ class CcxtTests(unittest.TestCase):
     def test_bitget_get_all_loan_infos(self):
         pprint.pprint(self.bitget.public_spot_get_spot_v1_public_loan_coininfos())
 
-    @unittest.skip
     def test_bitget_get_loan_info(self):
         symbol = "IMX"
         bitget_loan_infos = self.bitget.public_spot_get_spot_v1_public_loan_coininfos()['data']['loanInfos']
         for info in bitget_loan_infos:
             if info['coin'] == symbol:
-                pprint.pprint(str(info))
+                pprint.pprint(str(info['maxUsdt']))
 
     @unittest.skip
     def test_binance_calculate_colleteral_max_limit(self):
@@ -101,6 +100,7 @@ class CcxtTests(unittest.TestCase):
         free_usdt_balance =  account_balance['USDT']['free']
         pprint.pprint(free_usdt_balance)
 
+    @unittest.skip
     def test_bitget_loan_borrow(self):
         symbol = "IMX"
         pledge_usdt_amount = 100
@@ -158,5 +158,5 @@ class CcxtTests(unittest.TestCase):
 
 
 if __name__ == '__main__':  
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
     unittest.main()
