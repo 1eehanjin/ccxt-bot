@@ -8,26 +8,6 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from notice import Notice
 import upbit_notice_crawler
 
-titles = [
-            "[거래] BTC 마켓 디지털 자산 추가 (AXL)",
-            "[거래] BTC 마켓 디지털 자산 추가 (ID)",
-            "[거래] KRW 마켓 디지털 자산 추가 (MINA)",
-            "[거래] BTC 마켓 디지털 자산 추가 (GLMR) (GLMR 출금 수수료 일시 상향 안내)",
-            "[거래] BTC 마켓 디지털 자산 추가 (CYBER)",
-            "[거래] KRW, BTC 마켓 디지털 자산 추가 (SEI) (매도 주문 제한 기준 가격 변경 안내)",
-            "[거래] BTC 마켓 디지털 자산 추가 (STG)",
-            "[거래] KRW 마켓 디지털 자산 추가 (IMX)",
-            "[거래] BTC 마켓 디지털 자산 추가 (MINA)",
-            "[거래] KRW 마켓 디지털 자산 추가 (BLUR)",
-            "[거래] KRW 마켓 디지털 자산 추가 (GRT)",
-            "[거래] KRW, BTC 마켓 디지털 자산 추가 (SUI) (매도 주문 제한 기준 가격 안내)",
-            "[거래] KRW, BTC 마켓 디지털 자산 추가 (EGLD)",
-            "[거래] KRW, BTC 마켓 디지털 자산 추가 (ARB)",
-            "[거래] BTC 마켓 디지털 자산 추가 (MAGIC)",
-            "[거래] KRW, BTC 마켓 디지털 자산 추가 (MASK, ACS)",
-            "[거래] BTC 마켓 디지털 자산 추가 (BLUR)",
-            "[거래] BTC 마켓 디지털 자산 추가 (ASTR) (거래지원 개시 시점 연기 안내)"
-        ]
 class UpbitNoticeCrawlerTests(unittest.TestCase): 
     def setUp(self):
         self.upbit_notice_crawler = upbit_notice_crawler.UpbitNoticeCrawler()

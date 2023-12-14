@@ -12,10 +12,13 @@ class UpbitNoticeCrawler(AbstractNoticeCrawler):
         self.init_past_notices()
     
     def crawl_new_listing_symbols(self, notices):
-        notices = self.crawl_notices()
-        return self.find_new_listing_symbols(notices)
+        try:
+            notices = self.crawl_notices()
+            return self.find_new_listing_symbols(notices)
+        except Exception as e:
+            print("예외 발생:", e)
+            return []
         
-
     def find_new_listing_symbols(self, notices):
         latest_notice = notices[0]
 

@@ -25,14 +25,15 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
         }
         self.page_url = "https://cafe.bithumb.com/view/boards/43"
         self.init_past_notices()
-        #latest_notice_title = self.extract_latest_notice_title(bithumb_notices)
-        #self.set_latest_notice(latest_notice_title)
-        self.test_count = 0
 
     def crawl_new_listing_symbols(self):
-        #TODO: 테스트 함수에서 실제 함수로 바꿔야 함, 이런거 테스트 어떻게 하는지...
-        notices = self.crawl_notices()
-        return self.find_new_listing_symbols(notices)
+        try:
+            notices = self.crawl_notices()
+            return self.find_new_listing_symbols(notices)
+        except Exception as e:
+            print("예외 발생:", e)
+            return []
+
         
     def find_new_listing_symbols(self, notices):
         latest_notice = notices[0]
@@ -48,16 +49,7 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
 
 
     def crawl_notices(self): 
-        try:
-            response = requests.get(self.page_url, headers=self.headers)
-            if response.status_code == 200:
-                pass
-            else:
-                print(f"Request failed with status code: {response.status_code}")
-
-        except requests.exceptions.RequestException as e:
-            print(f"An error occurred: {e}")
-        
+        response = requests.get(self.page_url, headers=self.headers)
         soup=BeautifulSoup(response.content,'lxml')
         rank=soup.findAll(class_="invisible-mobile small-size")
         rank2=soup.findAll(class_="one-line")
