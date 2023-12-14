@@ -13,7 +13,7 @@ class BithumbNoticeCrawlerTests(unittest.TestCase):
     def setUp(self):
         self.bithumb_notice_crawler = bithumb_notice_crawler.BithumbNoticeCrawler()
 
-    def test_retrieve_notices(self):
+    def test_crawl_notices(self):
         notices = self.bithumb_notice_crawler.crawl_notices()
         for notice in notices:
             print(notice.id + " : " + notice.title)
