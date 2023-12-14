@@ -46,7 +46,7 @@ class UpbitNoticeCrawler():
     
     
     def extract_symbol_from_listing_notice(self, upbit_notice_title):
-        pattern = r'\(([^)]+)\)'  # 괄호로 둘러싸인 문자열을 찾는 패턴
+        pattern = r'\((.*?)\)' # 괄호로 둘러싸인 문자열을 찾는 패턴
         match = re.search(pattern, upbit_notice_title)
         symbol_str =  match.group(1)
         symbols = symbol_str.split(', ')
