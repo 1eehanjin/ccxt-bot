@@ -11,7 +11,7 @@ class UpbitNoticeCrawler(AbstractNoticeCrawler):
         self.past_notices = {}
         self.init_past_notices()
     
-    def crawl_new_listing_symbols(self, notices):
+    def crawl_new_listing_symbols(self):
         try:
             notices = self.crawl_notices()
             return self.find_new_listing_symbols(notices)

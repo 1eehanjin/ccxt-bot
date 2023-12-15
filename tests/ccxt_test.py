@@ -45,6 +45,7 @@ class CcxtTests(unittest.TestCase):
     def test_bitget_get_all_loan_infos(self):
         pprint.pprint(self.bitget.public_spot_get_spot_v1_public_loan_coininfos())
 
+    @unittest.skip
     def test_bitget_get_loan_max_limit(self):
         symbol = "IMX"
         bitget_loan_infos = self.bitget.public_spot_get_spot_v1_public_loan_coininfos()['data']['loanInfos']
@@ -52,7 +53,7 @@ class CcxtTests(unittest.TestCase):
             if info['coin'] == symbol:
                 pprint.pprint(info)
                 print(str(info['maxUsdt']))
-        
+    @unittest.skip    
     def test_bitget_calculate_colleteral_max_limit(self):
         symbol = "IMX"
         bitget_loan_infos = self.bitget.public_spot_get_spot_v1_public_loan_coininfos()['data']['loanInfos']
@@ -65,11 +66,11 @@ class CcxtTests(unittest.TestCase):
         
         
 
-    @unittest.skip
+
     def test_binance_calculate_colleteral_max_limit(self):
         timestamp = generate_timestamp()
         params_loanable_assets = {
-            'loanCoin': 'SLP',
+            'loanCoin': 'IMX',
             'timestamp': timestamp
         }
         loan_data = self.binance_with_key.sapiGetLoanFlexibleLoanableData(params=params_loanable_assets)

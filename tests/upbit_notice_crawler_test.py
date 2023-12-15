@@ -38,15 +38,6 @@ class UpbitNoticeCrawlerTests(unittest.TestCase):
         new_listing_notice = Notice("1234", "[거래] KRW, BTC 마켓 디지털 자산 추가 (TEST, TEST123)")
         notices.insert(0,new_listing_notice)
         print(self.upbit_notice_crawler.find_new_listing_symbols(notices))
-        
-
-
-
-
-
-    
-
-
 
 
 if __name__ == '__main__':  

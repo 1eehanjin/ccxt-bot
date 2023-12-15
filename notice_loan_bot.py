@@ -1,5 +1,6 @@
 import json
-import upbit_notice_crawler
+from bithumb_notice_crawler import BithumbNoticeCrawler
+from upbit_notice_crawler import UpbitNoticeCrawler
 import time
 import ccxt
 import math
@@ -35,12 +36,18 @@ class CcxtBinance():
 
     def on_new_coin_listing_detected(self, symbols):
         for symbol in symbols:
-                #self.binance_borrow_all(symbol)
-                self.bitget_loan_borrow(symbol)
+                self.binance_borrow_all(symbol)
+                self.bitget_borrow_all(symbol)
 
     def binance_borrow_all(self, symbol):
-        self.binance_loan_borrow(symbol)
-        self.binance_cross_margin_borrow(symbol, 1) #TODO: 수량 계산해야함 !
+        try:
+            self.binance_loan_borrow(symbol)
+        except Exception as e:
+            print(e)
+        try:
+            self.binance_cross_margin_borrow(symbol, 1) #TODO: 수량 계산해야함 !
+        except Exception as e:
+            print(e)
 
     def binance_loan_borrow(self, symbol):
         timestamp = generate_timestamp()
@@ -73,10 +80,19 @@ class CcxtBinance():
         account_balance = self.binance_with_key.fetch_balance()
         free_usdt_balance =  float(account_balance['USDT']['free'])
         free_usdt_balance = math.floor(free_usdt_balance)
+        free_usdt_balance = 100
         return free_usdt_balance
 
+    def bitget_borrow_all(self, symbol):
+        try:
+            self.bitget_loan_borrow(symbol)
+        except Exception as e:
+            print(e)
+
     def bitget_loan_borrow(self, symbol):
-        collateralAmount = min(self.bitget_calculate_colleteral_max_limit(symbol), self.bitget_get_account_free_usdt())
+        collateral_max_limit = self.bitget_calculate_colleteral_max_limit(symbol)
+        
+        collateralAmount = min(collateral_max_limit, self.bitget_get_account_free_usdt())
         params = {"loanCoin": symbol, "pledgeCoin": "USDT", "daily": "THIRTY", "pledgeAmount": str(collateralAmount)}
         print("비트겟 loan" + str(params))
         result_message = self.bitget_with_key.private_spot_post_spot_v1_loan_borrow(params=params)
@@ -97,6 +113,7 @@ class CcxtBinance():
         account_balance = self.bitget_with_key.fetch_balance()
         free_usdt_balance =  float(account_balance['USDT']['free'])
         free_usdt_balance = math.floor(free_usdt_balance)
+        free_usdt_balance = 100
         return free_usdt_balance
 
     def binance_cross_margin_borrow(self, symbol, amount): 
@@ -110,10 +127,17 @@ class CcxtBinance():
     
 
 if __name__ == '__main__': 
-    upbit_notice_crawler = upbit_notice_crawler.UpbitNoticeCrawler()
+    upbit_notice_crawler = UpbitNoticeCrawler()
+    bithumb_notice_crawler = BithumbNoticeCrawler()
     ccxtBinance = CcxtBinance()
+    ccxtBinance.on_new_coin_listing_detected(["SOL"])
     while True:
-        symbols = upbit_notice_crawler.crawl_listing_symbol()
+        symbols = upbit_notice_crawler.crawl_new_listing_symbols()
         if len(symbols) != 0:
             ccxtBinance.on_new_coin_listing_detected(symbols)
-        time.sleep(1)
+
+        symbols = bithumb_notice_crawler.crawl_new_listing_symbols()
+        if len(symbols) != 0:
+            ccxtBinance.on_new_coin_listing_detected(symbols)
+
+        time.sleep(10)
