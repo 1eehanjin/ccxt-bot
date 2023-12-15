@@ -113,7 +113,7 @@ class CcxtBinance():
         account_balance = self.bitget_with_key.fetch_balance()
         free_usdt_balance =  float(account_balance['USDT']['free'])
         free_usdt_balance = math.floor(free_usdt_balance)
-        free_usdt_balance = 500
+        free_usdt_balance = 100
         return free_usdt_balance
 
     def binance_cross_margin_borrow(self, symbol, amount): 
@@ -130,7 +130,6 @@ if __name__ == '__main__':
     upbit_notice_crawler = UpbitNoticeCrawler()
     bithumb_notice_crawler = BithumbNoticeCrawler()
     ccxtBinance = CcxtBinance()
-    ccxtBinance.on_new_coin_listing_detected(["IMX"])
     while True:
         symbols = upbit_notice_crawler.crawl_new_listing_symbols()
         if len(symbols) != 0:

@@ -36,10 +36,10 @@ class CcxtTests(unittest.TestCase):
     def test_print_exchanges(self):
         print(ccxt.exchanges)
 
-    @unittest.skip   
+    #@unittest.skip   
     def test_print_available_binance_functions(self):
         pprint.pprint(dir(self.binance)) 
-        pprint.pprint(dir(self.bitget))
+        #pprint.pprint(dir(self.bitget))
 
     @unittest.skip
     def test_bitget_get_all_loan_infos(self):
@@ -64,9 +64,22 @@ class CcxtTests(unittest.TestCase):
                 loan_max_limit = float(info['maxUsdt'])
         print(loan_max_limit)
         
-        
+    @unittest.skip
+    def test_bitget_revise_pledge(self):
+        orderId = "1118376454952226817"
+        colleteral_add_amount = 6
+        params_revise_pledge = {
+        "orderId" : orderId,
+        "amount" : str(colleteral_add_amount),
+        "pledgeCoin" : "USDT",
+        "reviseType" : 'IN',
+        }
 
+        result_message = self.bitget_with_key.privateSpotPostSpotV1LoanRevisePledge(params=params_revise_pledge)
 
+        print(result_message)
+
+    @unittest.skip
     def test_binance_calculate_colleteral_max_limit(self):
         timestamp = generate_timestamp()
         params_loanable_assets = {
@@ -142,6 +155,7 @@ class CcxtTests(unittest.TestCase):
             'timestamp': timestamp,
         }
         print(self.binance_with_key.sapiGetCapitalConfigGetall(params=params_all_coin_information))
+    
 
     @unittest.skip
     def test_binance_withdraw(self):
@@ -154,6 +168,7 @@ class CcxtTests(unittest.TestCase):
         'timestamp': timestamp,
         }
         print(self.binance_with_key.sapiPostCapitalWithdrawApply(params=params_withdraw))
+
 
 
 
