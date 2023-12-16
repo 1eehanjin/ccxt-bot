@@ -1,5 +1,4 @@
 import json
-import pprint
 from bithumb_notice_crawler import BithumbNoticeCrawler
 from upbit_notice_crawler import UpbitNoticeCrawler
 import time
@@ -7,37 +6,11 @@ import ccxt
 import math
 import message_sender
 
+#TODO: notice_bot.py 테스트 성공하면 파일 삭제
+
 def generate_timestamp():
     timestamp = int(time.time() * 1000)
     return timestamp
-
-class PrivateExchangeFactory:
-    def __init__(self):
-        with open('./secrets.json') as f:
-            secret_data = json.load(f)
-
-        self.binance_api_key = secret_data['binance']['api_key']
-        self.binance_secret = secret_data['binance']['secret']
-        
-        self.bitget_api_key = secret_data['bitget']['api_key']
-        self.bitget_secret = secret_data['bitget']['secret']
-        self.bitget_password = secret_data['bitget']['password']
-        
-
-    def create_binance_exchange(self):
-        binance_with_key = ccxt.binance({
-            'apiKey': self.binance_api_key,
-            'secret': self.binance_secret
-        })
-        return binance_with_key
-    
-    def create_bitget_exchange(self):
-        bitget_with_key = ccxt.bitget({
-            'apiKey': self.bitget_api_key,
-            'secret': self.bitget_secret,
-            'password': self.bitget_password,
-        })
-        return bitget_with_key
 
 class CcxtBinance(): 
     def __init__(self):
@@ -104,6 +77,7 @@ class CcxtBinance():
         colleteral_max_limit = math.floor(colleteral_max_limit)
         return colleteral_max_limit
 
+
     def binance_get_account_free_usdt(self):
         account_balance = self.binance_with_key.fetch_balance()
         free_usdt_balance =  float(account_balance['USDT']['free'])
@@ -157,21 +131,14 @@ class CcxtBinance():
 if __name__ == '__main__': 
     upbit_notice_crawler = UpbitNoticeCrawler()
     bithumb_notice_crawler = BithumbNoticeCrawler()
+    ccxtBinance = CcxtBinance()
+    while True:
+        symbols = upbit_notice_crawler.crawl_new_listing_symbols()
+        if len(symbols) != 0:
+            ccxtBinance.on_new_coin_listing_detected(symbols)
 
-    private_exchange_factory = PrivateExchangeFactory()
-    private_binance = private_exchange_factory.create_binance_exchange()
-    private_bitget = private_exchange_factory.create_bitget_exchange()
+        symbols = bithumb_notice_crawler.crawl_new_listing_symbols()
+        if len(symbols) != 0:
+            ccxtBinance.on_new_coin_listing_detected(symbols)
 
-    pprint.pprint(private_bitget.fetch_balance())
-
-    # ccxtBinance = CcxtBinance()
-    # while True:
-    #     symbols = upbit_notice_crawler.crawl_new_listing_symbols()
-    #     if len(symbols) != 0:
-    #         ccxtBinance.on_new_coin_listing_detected(symbols)
-
-    #     symbols = bithumb_notice_crawler.crawl_new_listing_symbols()
-    #     if len(symbols) != 0:
-    #         ccxtBinance.on_new_coin_listing_detected(symbols)
-
-    #     time.sleep(10)
+        time.sleep(10)

@@ -8,7 +8,10 @@ import ccxt
 import math
 import message_sender
 
-#TODO: 클래스 구조 바꿔서 notice_bot.py에 옮기는중
+#TODO: 테스트 코드 짜서 돌려야 한다.
+#TODO: 론봇 작동 피드백 텔레그램 메시지 수정
+#TODO: 론 담보 비율 조정하는 코드
+#TODO: 업비트 공지 조회하는 방식 바꾸고 공지 조회 텀 줄이기
 
 def generate_timestamp():
     timestamp = int(time.time() * 1000)
@@ -75,7 +78,8 @@ class BitgetLoanBorrower(AbstractLoanBorrower):
     def __init__(self, exchange:ccxt.bitget):
             self.exchange = exchange
 
-    def try_loan_borrow(self, symbol):
+        
+    def try_loan_borrow(self, symbol): 
         colleteral_amount = self.calcaulte_collateral(symbol)
         params = {"loanCoin": symbol, "pledgeCoin": "USDT", "daily": "THIRTY", "pledgeAmount": str(colleteral_amount)}
         print("비트겟 loan" + str(params))
