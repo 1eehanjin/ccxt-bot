@@ -18,7 +18,7 @@ class CcxtTests(unittest.TestCase):
 
     def test_bitget_on_new_coin_listing_detected(self):
         loan_borrower = BitgetLoanBorrower(self.private_bitget)
-        loan_borrower.on_new_coin_listing_detected(["TEST"])
+        loan_borrower.on_new_coin_listing_detected(["IMX"])
     
 if __name__ == '__main__':  
     unittest.main()
