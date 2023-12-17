@@ -36,10 +36,10 @@ class CcxtTests(unittest.TestCase):
     def test_print_exchanges(self):
         print(ccxt.exchanges)
 
-    #@unittest.skip   
+    @unittest.skip   
     def test_print_available_binance_functions(self):
         pprint.pprint(dir(self.binance)) 
-        #pprint.pprint(dir(self.bitget))
+        pprint.pprint(dir(self.bitget))
 
     @unittest.skip
     def test_bitget_get_all_loan_infos(self):
@@ -132,6 +132,7 @@ class CcxtTests(unittest.TestCase):
         'timestamp': timestamp,
         }
         print(self.binance_with_key.sapiPostLoanFlexibleBorrow(params=params_loan_borrow))
+    
 
     @unittest.skip
     def test_binance_cross_margin_borrow(self): 

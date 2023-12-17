@@ -10,11 +10,9 @@ import math
 import message_sender
 from loan_borrower import *
 
-#TODO: 테스트 코드 짜서 돌려야 한다.
 #TODO: 론봇 작동 피드백 텔레그램 메시지 수정
 #TODO: 론 담보 비율 조정하는 코드
 #TODO: 업비트 공지 조회하는 방식 바꾸고 공지 조회 텀 줄이기
-
 
     
 if __name__ == '__main__': 
