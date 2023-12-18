@@ -29,3 +29,4 @@ class PrivateExchangeFactory:
             'password': self.bitget_password,
         })
         return bitget_with_key
+    

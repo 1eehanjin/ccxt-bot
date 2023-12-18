@@ -1,16 +1,14 @@
-import time
+
 import unittest
-import requests
-import pprint
 import sys, os
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from notice import Notice
-import upbit_notice_crawler
+from modules.notice import Notice
+from modules.notice_crawler import *
 
 class UpbitNoticeCrawlerTests(unittest.TestCase): 
     def setUp(self):
-        self.upbit_notice_crawler = upbit_notice_crawler.UpbitNoticeCrawler()
+        self.upbit_notice_crawler = UpbitNoticeCrawler()
 
     def test_crawl_notices(self):
         notices = self.upbit_notice_crawler.crawl_notices()

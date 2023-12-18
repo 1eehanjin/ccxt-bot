@@ -1,10 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import math
 import time
-
 import ccxt
-
-import message_sender
+from modules import message_sender 
 
 
 def generate_timestamp():

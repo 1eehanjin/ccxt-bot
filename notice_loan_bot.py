@@ -1,144 +1,42 @@
-import json
-from bithumb_notice_crawler import BithumbNoticeCrawler
-from upbit_notice_crawler import UpbitNoticeCrawler
 import time
-import ccxt
-import math
-import message_sender
+from modules.private_exchange_factory import PrivateExchangeFactory
+from modules.loan_borrower import *
+from modules.notice_crawler import *
+import modules.message_sender
+#TODO: 론봇 성공 피드백 텔레그램 메시지 수정
+#TODO: 업비트 공지 조회하는 방식 바꾸고 공지 조회 텀 줄이기
 
-#TODO: notice_bot.py 테스트 성공하면 파일 삭제
-
-def generate_timestamp():
-    timestamp = int(time.time() * 1000)
-    return timestamp
-
-class CcxtBinance(): 
+class NoticeLoanBot():
     def __init__(self):
-        with open('./secrets.json') as f:
-            secret_data = json.load(f)
+        self.upbit_notice_crawler = UpbitNoticeCrawler()
+        self.bithumb_notice_crawler = BithumbNoticeCrawler()
 
-        binance_api_key = secret_data['binance']['api_key']
-        binance_secret = secret_data['binance']['secret']
-        self.binance_with_key = ccxt.binance({
-            'apiKey': binance_api_key,
-            'secret': binance_secret
-        })
-        bitget_api_key = secret_data['bitget']['api_key']
-        bitget_secret = secret_data['bitget']['secret']
-        bitget_password = secret_data['bitget']['password']
-        self.bitget_with_key = ccxt.bitget({
-            'apiKey': bitget_api_key,
-            'secret': bitget_secret,
-            'password': bitget_password,
-            
-        })
-        self.binance = ccxt.binance()
-        self.bitget = ccxt.bitget()
+        self.private_exchange_factory = PrivateExchangeFactory()
+        self.private_binance = self.private_exchange_factory.create_binance_exchange()
+        self.private_bitget = self.private_exchange_factory.create_bitget_exchange()
 
+        self.binance_loan_borrower = BinanceLoanBorrower(self.private_binance)
+        self.bitget_loan_borrower = BitgetLoanBorrower(self.private_bitget)
 
-    def on_new_coin_listing_detected(self, symbols):
-        for symbol in symbols:
-                self.binance_borrow_all(symbol)
-                self.bitget_borrow_all(symbol)
+    def work(self):
+        while True:
+            symbols = self.upbit_notice_crawler.crawl_new_listing_symbols()
+            if len(symbols) != 0:
+                self.binance_loan_borrower.on_new_coin_listing_detected(symbols)
+                self.bitget_loan_borrower.on_new_coin_listing_detected(symbols)
 
-    def binance_borrow_all(self, symbol):
-        try:
-            self.binance_loan_borrow(symbol)
-        except Exception as e:
-            print(e)
-        try:
-            self.binance_cross_margin_borrow(symbol, 1) #TODO: 수량 계산해야함 !
-        except Exception as e:
-            print(e)
+            symbols = self.bithumb_notice_crawler.crawl_new_listing_symbols()
+            if len(symbols) != 0:
+                self.binance_loan_borrower.on_new_coin_listing_detected(symbols)
+                self.bitget_loan_borrower.on_new_coin_listing_detected(symbols)
+            time.sleep(10)
 
-    def binance_loan_borrow(self, symbol):
-        timestamp = generate_timestamp()
-        collateralAmount = min(self.binance_calculate_colleteral_max_limit(symbol), self.binance_get_account_free_usdt())
-        params_loan_borrow = {
-        'loanCoin' : symbol,
-        'collateralCoin': 'USDT',
-        'collateralAmount' : collateralAmount, #USDT 기준이다.
-        'timestamp': timestamp,
-        }
-        print("바이낸스 loan" + str(params_loan_borrow))
-        result_message = self.binance_with_key.sapiPostLoanFlexibleBorrow(params=params_loan_borrow)
-        message_sender.send_telegram_message(result_message)
-        return(result_message)
     
-    def binance_calculate_colleteral_max_limit(self, symbol):
-        timestamp = generate_timestamp()
-        params_loanable_assets = {
-            'loanCoin': symbol,
-            'timestamp': timestamp
-        }
-        loan_data = self.binance_with_key.sapiGetLoanFlexibleLoanableData(params=params_loanable_assets)
-        loan_max_limit = loan_data['rows'][0]['flexibleMaxLimit']
-        colleteral_max_limit = float(loan_max_limit) * 10 / 7
-        colleteral_max_limit = math.floor(colleteral_max_limit)
-        return colleteral_max_limit
-
-
-    def binance_get_account_free_usdt(self):
-        account_balance = self.binance_with_key.fetch_balance()
-        free_usdt_balance =  float(account_balance['USDT']['free'])
-        free_usdt_balance = math.floor(free_usdt_balance)
-        free_usdt_balance = 100
-        return free_usdt_balance
-
-    def bitget_borrow_all(self, symbol):
-        try:
-            self.bitget_loan_borrow(symbol)
-        except Exception as e:
-            print(e)
-
-    def bitget_loan_borrow(self, symbol):
-        collateral_max_limit = self.bitget_calculate_colleteral_max_limit(symbol)
-        
-        collateralAmount = min(collateral_max_limit, self.bitget_get_account_free_usdt())
-        params = {"loanCoin": symbol, "pledgeCoin": "USDT", "daily": "THIRTY", "pledgeAmount": str(collateralAmount)}
-        print("비트겟 loan" + str(params))
-        result_message = self.bitget_with_key.private_spot_post_spot_v1_loan_borrow(params=params)
-        message_sender.send_telegram_message(result_message)
-        return(result_message)
-
-    def bitget_calculate_colleteral_max_limit(self, symbol):
-        bitget_loan_infos = self.bitget.public_spot_get_spot_v1_public_loan_coininfos()['data']['loanInfos']
-        colleteral_max_limit = 0
-        for info in bitget_loan_infos:
-            if info['coin'] == symbol:
-                colleteral_max_limit = info['maxUsdt']
-        colleteral_max_limit = float(colleteral_max_limit)
-        colleteral_max_limit = math.floor(colleteral_max_limit)
-        return colleteral_max_limit
-
-    def bitget_get_account_free_usdt(self):
-        account_balance = self.bitget_with_key.fetch_balance()
-        free_usdt_balance =  float(account_balance['USDT']['free'])
-        free_usdt_balance = math.floor(free_usdt_balance)
-        free_usdt_balance = 100
-        return free_usdt_balance
-
-    def binance_cross_margin_borrow(self, symbol, amount): 
-        timestamp = generate_timestamp()
-        params_margin_loan = {
-        'asset' : symbol,
-        'amount': amount, #USDT 기준이 아닌 빌리는 코인 기준으로 수량 입력해야 한다.
-        'timestamp': timestamp,
-        }
-        return(self.binance_with_key.sapiPostMarginLoan(params=params_margin_loan))
-    
-
 if __name__ == '__main__': 
-    upbit_notice_crawler = UpbitNoticeCrawler()
-    bithumb_notice_crawler = BithumbNoticeCrawler()
-    ccxtBinance = CcxtBinance()
-    while True:
-        symbols = upbit_notice_crawler.crawl_new_listing_symbols()
-        if len(symbols) != 0:
-            ccxtBinance.on_new_coin_listing_detected(symbols)
-
-        symbols = bithumb_notice_crawler.crawl_new_listing_symbols()
-        if len(symbols) != 0:
-            ccxtBinance.on_new_coin_listing_detected(symbols)
-
-        time.sleep(10)
+    notice_loan_bot = NoticeLoanBot()
+    message_sender.send_telegram_message("* 공지 론 봇 작동을 시작합니다.")
+    try:
+        notice_loan_bot.work()
+    except Exception as e:
+        error_message = f"* 오류로 공지 론 봇 작동이 종료되었습니다.\n{e}"
+        message_sender.send_telegram_message(error_message)

@@ -2,10 +2,9 @@ import sys, os
 import unittest
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from private_exchange_factory import PrivateExchangeFactory
-from loan_borrower import *
+from modules.private_exchange_factory import PrivateExchangeFactory
+from modules.loan_borrower import *
 
-#TODO : 바이낸스 테스트 돌려야함(ip제한때문에 밖에서 테스트 못돌림)
 class CcxtTests(unittest.TestCase): 
     def setUp(self):
         private_exchange_factory = PrivateExchangeFactory()

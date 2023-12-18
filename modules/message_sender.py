@@ -1,4 +1,3 @@
-import json
 import requests
 
 def send_telegram_message(text):
