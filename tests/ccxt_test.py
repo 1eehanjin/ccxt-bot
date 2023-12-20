@@ -149,13 +149,25 @@ class CcxtTests(unittest.TestCase):
         fund = self.binance.fapiPublicGetFundingInfo()
         print(fund)
 
-    @unittest.skip
-    def test_binance_get_all_coin_information(self):
+    #@unittest.skip
+    def test_binance_get_coin_network(self):
         timestamp = generate_timestamp()
+        symbol = "USDC"
         params_all_coin_information = {
             'timestamp': timestamp,
         }
-        print(self.binance_with_key.sapiGetCapitalConfigGetall(params=params_all_coin_information))
+        all_coin_info = self.binance_with_key.sapiGetCapitalConfigGetall(params=params_all_coin_information)
+        for coin_info in all_coin_info:
+            if coin_info['coin'] == symbol:
+                print( "<"+coin_info['coin'] +">")
+                for network_info in coin_info['networkList']:
+                    if network_info["isDefault"]:
+                        print("*"+ network_info['network'] )
+                    else:
+                        print(network_info['network'])
+                print("\n")
+                
+        
     
 
     @unittest.skip

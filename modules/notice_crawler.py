@@ -1,8 +1,11 @@
 from abc import *
+import json
+import pprint
 from bs4 import BeautifulSoup
 import requests
 import re
 from modules.notice import Notice
+from requests.auth import HTTPProxyAuth
 
 
 class AbstractNoticeCrawler(metaclass = ABCMeta):
@@ -114,10 +117,15 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
     
 class UpbitNoticeCrawler(AbstractNoticeCrawler): 
     def __init__(self):
+        with open('./secrets.json') as f:
+            secret_data = json.load(f)
+            self.proxies = secret_data['proxies']
+        self.proxy_count = 0
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'}
         self.page_url = 'https://api-manager.upbit.com/api/v1/notices?page=1&per_page=20&thread_name=general'
         self.past_notices = {}
         self.init_past_notices()
+        
     
     def crawl_new_listing_symbols(self):
         try:
@@ -141,8 +149,9 @@ class UpbitNoticeCrawler(AbstractNoticeCrawler):
 
 
     def crawl_notices(self): 
-        #TODO: 프록시 등의 방법으로 딜레이 없이 계속 긁을 수 있도록 함수 바꿔야 함
-        response = requests.get(self.page_url, headers=self.headers)
+        self.proxy_count +=1
+        self.proxy_count %= len(self.proxies)
+        response = requests.get(self.page_url, headers=self.headers, proxies=self.proxies[self.proxy_count])
         upbit_notices = response.json()
         upbit_notices = upbit_notices['data']['list']
         notices = []
