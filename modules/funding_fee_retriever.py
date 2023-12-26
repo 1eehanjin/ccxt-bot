@@ -21,7 +21,7 @@ class FundingFeeRetriever():
             'timestamp': generate_timestamp()
         }
         #history
-        pprint.pprint(self.bingx.fetch_funding_fee("ETH"))
+        pprint.pprint(self.bingx.fetch_funding_rate("ETH/USDT:USDT"))
         pprint.pprint(self.bingx.swap_v2_public_get_quote_fundingrate(params=params))
         #current
         pprint.pprint(self.bingx.swapV2PublicGetQuotePremiumIndex(params=params))
