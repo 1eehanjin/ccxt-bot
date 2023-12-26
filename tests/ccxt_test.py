@@ -149,13 +149,19 @@ class CcxtTests(unittest.TestCase):
         fund = self.binance.fapiPublicGetFundingInfo()
         print(fund)
 
+<<<<<<< Updated upstream
     #@unittest.skip
     def test_binance_get_coin_network(self):
+=======
+
+    def test_binance_get_all_coin_information(self):
+>>>>>>> Stashed changes
         timestamp = generate_timestamp()
         symbol = "USDC"
         params_all_coin_information = {
             'timestamp': timestamp,
         }
+<<<<<<< Updated upstream
         all_coin_info = self.binance_with_key.sapiGetCapitalConfigGetall(params=params_all_coin_information)
         for coin_info in all_coin_info:
             if coin_info['coin'] == symbol:
@@ -168,6 +174,12 @@ class CcxtTests(unittest.TestCase):
                 print("\n")
                 
         
+=======
+        datas = (self.binance_with_key.sapiGetCapitalConfigGetall(params=params_all_coin_information))
+        for data in datas:
+            if (data['coin'] == 'OSMO'):
+                pprint.pprint(data)
+>>>>>>> Stashed changes
     
 
     @unittest.skip

@@ -30,7 +30,7 @@ class BithumbNoticeCrawlerTests(unittest.TestCase):
         notices = self.bithumb_notice_crawler.crawl_notices()
         print(self.bithumb_notice_crawler.find_new_listing_symbols(notices))
 
-        new_listing_notice = Notice("123", "[안내] 창립 10주년 기념 - 다섯번째, 100억 기금 '빗썸 나눔 공익재단' 출범")
+        new_listing_notice = Notice("123", "[안내] 창립 10주년 기념 - 다섯번째, 100억 기금 '빗썸 나눔 공익재단' 출범 이더리움(ETH)")
         notices.insert(0,new_listing_notice)
         print(self.bithumb_notice_crawler.find_new_listing_symbols(notices))
 
