@@ -5,13 +5,13 @@ import json
 
 
 destination_addresses = [
-    '0xd17f61Fd1EB2DE9989f2594fD3d734c99Cc419e8',
-    '0xE01495dE5385b315d597Af8Da1266244BeC10a67',
-    '0xf36284246d02A8E58736d68365829408d8e66451',
-    '0x7800B5822Eb4cBaFBA05aa88a0D5F3302d03F172',
-    '0xbDb2b74f28E3b22ad28b96f025f5cd17384123a1',
-    '0xaBdAAbff32d318654CE5ea398EC39f0F429F0c47',
-]
+    "0xd1A5fDbf51798A1201e73A6BCAED2cc3Fcd570e9",
+    "0x59E970465Dc722817b35779a307cf3855b0818F2",
+    "0xa1d51fc41B34a6222Bc633dbD75DE42053b3E471",
+    "0x06049648c6f68c95a6D88bfEC5CB80E13f689131",
+    "0xB5f96F96DcaE4BfBA642d8d9B4C0faa785FA55E2",
+    "0x39348c29b7d06C066f93eF786b938F484bb4b92d"
+    ]
 
 def generate_timestamp():
     timestamp = int(time.time() * 1000)
@@ -31,8 +31,9 @@ class CcxtBinance():
         self.binance = ccxt.binance()
 
     def distribute(self):
-        timestamp = generate_timestamp()
+        
         for destination_address in destination_addresses:
+            timestamp = generate_timestamp()
             params_withdraw = {
             'coin':'BNB',
             'network':'BSC',
