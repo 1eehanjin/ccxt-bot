@@ -34,7 +34,7 @@ import pybithumb
 import time
 
 
-ORDER_BTC_AMOUNT = 0.004
+ORDER_BTC_AMOUNT = 0.002
 TARGET_TRADE_VOLUME = 1000000000
 
 
