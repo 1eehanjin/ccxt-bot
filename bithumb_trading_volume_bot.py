@@ -29,8 +29,8 @@ import pybithumb
 import time
 
 
-ORDER_BTC_AMOUNT = 0.002
-TARGET_TRADE_VOLUME = 2000000000
+ORDER_BTC_AMOUNT = 0.004
+TARGET_TRADE_VOLUME = 1000000000
 
 
 
@@ -52,7 +52,7 @@ while True:
 
 
     remain_btc_amount = bithumb.get_balance('btc')[0]
-    remain_btc_amount = math.floor(remain_btc_amount * 1000) / 1000 
+    remain_btc_amount = math.floor(remain_btc_amount * 10000) / 10000
 
     if remain_btc_amount < ORDER_BTC_AMOUNT:
         orderbook_data = bithumb.get_orderbook('BTC')
@@ -67,10 +67,11 @@ while True:
                 print("지정가  매수 주문 미체결로 취소 뒤 재주문합니다.")
                 count = 0
                 bithumb.cancel_order(order_desc=result)
+                time.sleep(0.5)
                 orderbook_data = bithumb.get_orderbook('BTC')
                 bid_price = orderbook_data['bids'][0]['price']
                 remain_btc_amount = bithumb.get_balance('btc')[0]
-                remain_btc_amount = math.floor(remain_btc_amount * 1000) / 1000
+                remain_btc_amount = math.floor(remain_btc_amount * 10000) / 10000
                 if remain_btc_amount == ORDER_BTC_AMOUNT:
                     break
                 else:
@@ -83,7 +84,7 @@ while True:
         trade_krw += bid_price * ORDER_BTC_AMOUNT
 
     remain_btc_amount = bithumb.get_balance('btc')[0]
-    remain_btc_amount = math.floor(remain_btc_amount * 1000) / 1000 
+    remain_btc_amount = math.floor(remain_btc_amount * 10000) / 10000 
 
     if remain_btc_amount > 0:
         orderbook_data = bithumb.get_orderbook('BTC')
@@ -98,10 +99,11 @@ while True:
                 print("지정가 매도 주문 미체결로 취소 뒤 재주문합니다.")
                 count = 0
                 bithumb.cancel_order(order_desc=result)
+                time.sleep(0.5)
                 remain_btc_amount = bithumb.get_balance('btc')[0]
                 orderbook_data = bithumb.get_orderbook('BTC')
                 ask_price = orderbook_data['asks'][0]['price']
-                remain_btc_amount = math.floor(remain_btc_amount * 1000) / 1000
+                remain_btc_amount = math.floor(remain_btc_amount * 10000) / 10000
                 if remain_btc_amount == 0:
                     break
                 else:
