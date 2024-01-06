@@ -11,7 +11,8 @@ pip install pybithumb
 
 주의사항: btc 보유량 없어야 하고 btc 주문 수량 만큼의 원화는 있어야 함 (0.002 기준 13만원 ?)
 
-secrets.json 양식
+secrets.json 파일 생성해서 쓰면 됨 (하단 양식)
+***혹시 코드 복붙해서 쓰다가 깃허브에 키 올리지 않도록 조심***
 {
 "bithumb":
     {
