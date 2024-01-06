@@ -118,7 +118,7 @@ while True:
             outstanding_order_data = bithumb.get_outstanding_order(order_desc=result)
         print("지정가 매도 주문 체결 확인")
         trade_krw += ask_price * ORDER_BTC_AMOUNT
-    print(f"현재 사용금액: {bithumb.get_balance('btc')[2] - initial_balance}")
+    print(f"현재 사용금액: {initial_balance - bithumb.get_balance('btc')[2] }")
     print(f"현재 거래량: {trade_krw}")
 
 
