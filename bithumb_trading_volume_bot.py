@@ -1,14 +1,37 @@
 #지정가 매수 걸고
 #체결됐는지 확인
 #체결됐으면 지정가 매도
-#확인하는데 체결 5초이상 안되면 지정가 주문 취소하고 다시 걸기?
+#확인하는데 체결완료 5초이상 안되면 지정가 주문 취소하고 체결안된 수량만큼 다시 걸기
+
+'''
+ORDER_BTC_AMOUNT : btc 주문 수량 (예: 0.002면  0 > (매수) > 0.002 > (매도) > 0 > 0.002 > 0 ...)
+TARGET_TRADE_VOLUME : 목표 거래량
+
+pip install pybithumb
+
+주의사항: btc 보유량 없어야 하고 btc 주문 수량 만큼의 원화는 있어야 함 (0.002 기준 13만원 ?)
+
+secrets.json 양식
+{
+"bithumb":
+    {
+        "api_key": "XXX",
+        "secret": "XXX"
+    }
+}
+'''
+
 
 import json
 import math
 import pybithumb
 import time
 
-order_btc_amount = 0.002
+
+
+
+ORDER_BTC_AMOUNT = 0.002
+TARGET_TRADE_VOLUME = 1000000000
 
 with open('./secrets.json') as f:
     secrets = json.load(f)
@@ -22,18 +45,18 @@ print(initial_balance)
 trade_krw = 0
 
 while True:
-    if trade_krw > 890000000:
+    if trade_krw > TARGET_TRADE_VOLUME:
         break
 
 
     remain_btc_amount = bithumb.get_balance('btc')[0]
     remain_btc_amount = math.floor(remain_btc_amount * 1000) / 1000 
 
-    if remain_btc_amount < order_btc_amount:
+    if remain_btc_amount < ORDER_BTC_AMOUNT:
         orderbook_data = bithumb.get_orderbook('BTC')
         bid_price = orderbook_data['bids'][0]['price']
 
-        result = bithumb.buy_limit_order('BTC', bid_price, order_btc_amount - remain_btc_amount)
+        result = bithumb.buy_limit_order('BTC', bid_price, ORDER_BTC_AMOUNT - remain_btc_amount)
         time.sleep(0.5)
         outstanding_order_data = bithumb.get_outstanding_order(order_desc=result)
         count = 0
@@ -46,16 +69,16 @@ while True:
                 bid_price = orderbook_data['bids'][0]['price']
                 remain_btc_amount = bithumb.get_balance('btc')[0]
                 remain_btc_amount = math.floor(remain_btc_amount * 1000) / 1000
-                if remain_btc_amount == order_btc_amount:
+                if remain_btc_amount == ORDER_BTC_AMOUNT:
                     break
                 else:
-                    result = bithumb.buy_limit_order('BTC', bid_price, order_btc_amount - remain_btc_amount)
+                    result = bithumb.buy_limit_order('BTC', bid_price, ORDER_BTC_AMOUNT - remain_btc_amount)
 
             time.sleep(1)
             count += 1
             outstanding_order_data = bithumb.get_outstanding_order(order_desc=result)
         print("지정가 매수 주문 체결 확인")
-        trade_krw += bid_price * order_btc_amount
+        trade_krw += bid_price * ORDER_BTC_AMOUNT
 
     remain_btc_amount = bithumb.get_balance('btc')[0]
     remain_btc_amount = math.floor(remain_btc_amount * 1000) / 1000 
@@ -85,7 +108,7 @@ while True:
             count += 1
             outstanding_order_data = bithumb.get_outstanding_order(order_desc=result)
         print("지정가 매도 주문 체결 확인")
-        trade_krw += bid_price * order_btc_amount
+        trade_krw += bid_price * ORDER_BTC_AMOUNT
     print(f"현재 사용금액: {bithumb.get_balance('btc')[2] - initial_balance}")
     print(f"현재 거래량: {trade_krw}")
 
