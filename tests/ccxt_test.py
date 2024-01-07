@@ -152,7 +152,7 @@ class CcxtTests(unittest.TestCase):
     #@unittest.skip
     def test_binance_get_coin_network(self):
         timestamp = generate_timestamp()
-        symbol = "BNB"
+        symbol = "POWR"
         params_all_coin_information = {
             'timestamp': timestamp,
         }

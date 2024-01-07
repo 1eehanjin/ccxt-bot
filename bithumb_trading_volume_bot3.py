@@ -34,8 +34,8 @@ import pybithumb
 import time
 
 
-ORDER_BTC_AMOUNT = 0.006
-TARGET_TRADE_VOLUME = 1900000000
+ORDER_BTC_AMOUNT = 0.002
+TARGET_TRADE_VOLUME = 750000000
 
 
 
@@ -43,8 +43,8 @@ TARGET_TRADE_VOLUME = 1900000000
 with open('./secrets.json') as f:
     secrets = json.load(f)
 
-api_key = secrets['bithumb']['api_key']
-secret = secrets['bithumb']['secret']
+api_key = secrets['bithumb3']['api_key']
+secret = secrets['bithumb3']['secret']
 bithumb = pybithumb.Bithumb(api_key, secret)
 
 initial_balance = bithumb.get_balance('btc')[2]
@@ -72,7 +72,7 @@ while True:
                 print("지정가  매수 주문 미체결로 취소 뒤 재주문합니다.")
                 count = 0
                 bithumb.cancel_order(order_desc=result)
-                time.sleep(0.5)
+                #time.sleep(0.5)
                 orderbook_data = bithumb.get_orderbook('BTC')
                 bid_price = orderbook_data['bids'][0]['price']
                 remain_btc_amount = bithumb.get_balance('btc')[0]
@@ -104,7 +104,7 @@ while True:
                 print("지정가 매도 주문 미체결로 취소 뒤 재주문합니다.")
                 count = 0
                 bithumb.cancel_order(order_desc=result)
-                time.sleep(0.5)
+                #time.sleep(0.5)
                 remain_btc_amount = bithumb.get_balance('btc')[0]
                 orderbook_data = bithumb.get_orderbook('BTC')
                 ask_price = orderbook_data['asks'][0]['price']
@@ -118,7 +118,7 @@ while True:
             outstanding_order_data = bithumb.get_outstanding_order(order_desc=result)
         print("지정가 매도 주문 체결 확인")
         trade_krw += ask_price * ORDER_BTC_AMOUNT
-    print(f"현재 사용금액: {initial_balance - bithumb.get_balance('btc')[2] }")
+    print(f"현재 사용금액: {bithumb.get_balance('btc')[2] - initial_balance}")
     print(f"현재 거래량: {trade_krw}")
 
 
