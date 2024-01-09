@@ -4,12 +4,17 @@ import pprint
 from bs4 import BeautifulSoup
 import requests
 import re
+from modules.message_sender import send_telegram_message
 from modules.notice import Notice
 from requests.auth import HTTPProxyAuth
 
 
 class AbstractNoticeCrawler(metaclass = ABCMeta):
     past_notices = {}
+    with open('./secrets.json') as f:
+        secret_data = json.load(f)
+        proxies = secret_data['proxies']
+        proxy_count = 0
 
     def init_past_notices(self): 
         notices = self.crawl_notices()
@@ -63,7 +68,7 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
-        self.page_url = "https://cafe.bithumb.com/view/boards/43"
+        self.page_url = "https://feed.bithumb.com/notice"
         self.init_past_notices()
 
     def crawl_new_listing_symbols(self):
@@ -89,26 +94,28 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
 
 
     def crawl_notices(self): 
-        response = requests.get(self.page_url, headers=self.headers)
+        self.proxy_count +=1
+        self.proxy_count %= len(self.proxies)
+        response = requests.get(self.page_url, headers=self.headers, proxies=self.proxies[self.proxy_count])
         soup=BeautifulSoup(response.content,'lxml')
-        rank=soup.findAll(class_="invisible-mobile small-size")
-        rank2=soup.findAll(class_="one-line")
+        
+        string_data = soup.find(id="__NEXT_DATA__").string
+        parsed_data = json.loads(string_data)
+        bithumb_notices = parsed_data['props']['pageProps']['noticeList']
         notices = []
-        if len(rank):
-            for i in range(0,30):
-                notice_id=rank[i].text
-                notice_title=rank2[i].text
-                notice = Notice(notice_id, notice_title)
-                if self.is_pinned_notice(notice):
-                    continue
-                notices.append(notice)
+        for bithumb_notice in bithumb_notices:
+            if bithumb_notice['topFixYn'] == 'Y':
+                continue
+            title = f"[{bithumb_notice['categoryName1']}]{bithumb_notice['title']}"
+            notice = Notice(str(bithumb_notice['id']), title)
+            notices.append(notice)
+        if not notices:
+            raise ValueError("빗썸 공지를 읽어오지 못했습니다.")
         return notices
     
-    def is_pinned_notice(self, notice):
-        return notice.id == '■'
 
     def is_listing_notice(self, notice):
-        return notice.id != '■' and '[마켓 추가]' in notice.title
+        return '[마켓 추가]' in notice.title
 
     def extract_symbol(self, notice):
         pattern = r'\(([A-Za-z0-9]+)\)'
@@ -117,10 +124,6 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
     
 class UpbitNoticeCrawler(AbstractNoticeCrawler): 
     def __init__(self):
-        with open('./secrets.json') as f:
-            secret_data = json.load(f)
-            self.proxies = secret_data['proxies']
-        self.proxy_count = 0
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'}
         self.page_url = 'https://api-manager.upbit.com/api/v1/notices?page=1&per_page=20&thread_name=general'
         self.past_notices = {}
@@ -158,6 +161,8 @@ class UpbitNoticeCrawler(AbstractNoticeCrawler):
         for upbit_notice in upbit_notices:
             notice = Notice(str(upbit_notice['id']), upbit_notice['title'])
             notices.append(notice)
+        if not notices:
+            raise ValueError("업비트 공지를 읽어오지 못했습니다.")
         return notices
     
 
