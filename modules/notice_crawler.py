@@ -7,7 +7,7 @@ import re
 from modules.message_sender import send_telegram_message
 from modules.notice import Notice
 from requests.auth import HTTPProxyAuth
-
+import datetime
 
 class AbstractNoticeCrawler(metaclass = ABCMeta):
     past_notices = {}
@@ -76,7 +76,10 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
             notices = self.crawl_notices()
             return self.find_new_listing_symbols(notices)
         except Exception as e:
-            print("예외 발생:", e)
+            now = datetime.datetime.now()
+            formatted_time = f"현재 시간: {now:%Y-%m-%d %H:%M:%S}"
+            print(formatted_time + "| 예외 발생:", e)
+
             return []
 
         
@@ -135,7 +138,9 @@ class UpbitNoticeCrawler(AbstractNoticeCrawler):
             notices = self.crawl_notices()
             return self.find_new_listing_symbols(notices)
         except Exception as e:
-            print("예외 발생:", e)
+            now = datetime.datetime.now()
+            formatted_time = f"현재 시간: {now:%Y-%m-%d %H:%M:%S}"
+            print(formatted_time + "| 예외 발생:", e)
             return []
         
     def find_new_listing_symbols(self, notices):
