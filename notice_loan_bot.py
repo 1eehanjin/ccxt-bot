@@ -30,7 +30,8 @@ class NoticeLoanBot():
             if len(symbols) != 0:
                 self.binance_loan_borrower.on_new_coin_listing_detected(symbols)
                 self.bitget_loan_borrower.on_new_coin_listing_detected(symbols)
-            time.sleep(10)
+            #time.sleep(5)
+            print(datetime.datetime.now())
 
     
 if __name__ == '__main__': 

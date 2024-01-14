@@ -82,18 +82,20 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
 
             return []
 
-        
+
     def find_new_listing_symbols(self, notices):
         latest_notice = notices[0]
         
         if not self.is_new_notice(latest_notice):
             return []
         self.append_past_notice(latest_notice)
-        print("새로운 공지 추가 감지됨 : "+ latest_notice.title)
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"{current_time}에 새로운 공지 추가 감지됨: {latest_notice.title}")
         if not self.is_listing_notice(latest_notice):
             return []
         symbols = self.extract_symbol(latest_notice)
         return symbols
+
 
 
     def crawl_notices(self): 
@@ -142,18 +144,21 @@ class UpbitNoticeCrawler(AbstractNoticeCrawler):
             formatted_time = f"현재 시간: {now:%Y-%m-%d %H:%M:%S}"
             print(formatted_time + "| 예외 발생:", e)
             return []
-        
+
+
     def find_new_listing_symbols(self, notices):
         latest_notice = notices[0]
-
+        
         if not self.is_new_notice(latest_notice):
             return []
         self.append_past_notice(latest_notice)
-        print("새로운 공지 추가 감지됨 : "+ latest_notice.title)
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"{current_time}에 새로운 공지 추가 감지됨: {latest_notice.title}")
         if not self.is_listing_notice(latest_notice):
             return []
         symbols = self.extract_symbol(latest_notice)
         return symbols
+
 
 
     def crawl_notices(self): 
