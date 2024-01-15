@@ -99,9 +99,10 @@ class BithumbNoticeCrawler(AbstractNoticeCrawler) :
 
 
     def crawl_notices(self): 
-        self.proxy_count +=1
-        self.proxy_count %= len(self.proxies)
-        response = requests.get(self.page_url, headers=self.headers, proxies=self.proxies[self.proxy_count])
+        # self.proxy_count +=1
+        # self.proxy_count %= len(self.proxies)
+        # response = requests.get(self.page_url, headers=self.headers, proxies=self.proxies[self.proxy_count])
+        response = requests.get(self.page_url, headers=self.headers)
         soup=BeautifulSoup(response.content,'lxml')
         
         string_data = soup.find(id="__NEXT_DATA__").string
