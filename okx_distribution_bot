@@ -1,0 +1,57 @@
+
+import ccxt
+import time
+import json
+
+destination_addresses = [
+    'FsJArm74eBZy81mZ9wBeZoc9MobqqWBj2Z2wP7yJnPVf',
+    'GMg77wdDfS7gxjgRwTXBR3VkuM5qv21FKhWYepY7bbxx'
+]
+
+def generate_timestamp():
+    timestamp = int(time.time() * 1000)
+    return timestamp
+
+class CcxtOkx(): 
+    def __init__(self):
+        with open('./secrets.json') as f:
+            secrets = json.load(f)
+
+        api_key = secrets['okx']['api_key']
+        secret = secrets['okx']['secret']
+        password = secrets['okx']['password']
+        self.okx_with_key = ccxt.okx({
+            'apiKey': api_key,
+            'secret':secret,
+            'password': password
+        })
+
+    def distribute(self):
+        
+        for destination_address in destination_addresses:
+            params_withdraw = {
+                "amt":"0.01",
+                "fee":"0.0064",
+                "dest":"4",
+                "ccy":"SOL",
+                "chain":"SOL-Solana",
+                "toAddr":destination_address
+            }
+            print(self.okx_with_key.privatePostAssetWithdrawal(params=params_withdraw))
+
+            params_withdraw = {
+                "amt":"3",
+                "fee":"1.06",
+                "dest":"4",
+                "ccy":"PYTH",
+                "chain":"PYTH-Solana",
+                "toAddr":destination_address
+            }
+            print(self.okx_with_key.privatePostAssetWithdrawal(params=params_withdraw))
+            time.sleep(5)
+
+
+
+if __name__ == '__main__':  
+    ccxtOkx = CcxtOkx()
+    ccxtOkx.distribute()
