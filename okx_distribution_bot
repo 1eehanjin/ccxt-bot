@@ -4,15 +4,28 @@ import time
 import json
 
 destination_addresses = [
-    'FsJArm74eBZy81mZ9wBeZoc9MobqqWBj2Z2wP7yJnPVf',
-    'GMg77wdDfS7gxjgRwTXBR3VkuM5qv21FKhWYepY7bbxx'
+    '3iupqobZAqkTTiiB3YVnxypgXBZrojZnTra5rVBBnM1s',
+    'G35et8STx7ENGgPmPkZZxXmDsWtBx42ZQtUL7tzZafNv',
+    '5567LkGKT9AEizoy6pFzZTskc5JEkiG2jC5yuXQHhewk',
+    'GsVbQTPmHYe3iqwrWm6BBx8WPsKDGRwcn4zW3LYJUKEy',
+    'BsEXiZAgmraYPDfPcox9Y7imn191varPrDtbGiKechiw',
+    '9Am1GiUXWQyt9Rr4FBtxkQcovGR1fgnWbYtypLVFWDsc',
+    '4qfA87cuV7Z6e1MwrA2Pxif1DXgkLRbzozFdcPmdpzze',
+    '8FLuH1QNHZBHK2WKcsbr5CwoxpyGWWkcumnEm5pLf47f',
+    '3ogk1ECZzhVyfAJLeD3EegL2dH2Ar5Xv3MBGhPLvHgMt',
+    'D6y84K7TwzYqQzxzp3WdeR7bHy153VRXtjocQBu2oYLA',
+    '3WCfxj4ikL6qXghJDDdBo8MwUKkDaXfe5CCrcRTPUYPD',
+    'DjUWmznPy5fiuWKSMKGRoNbntkvteaWYFQb27HU4a52c',
+    '2DwvNuDfazEdBL3nJc9RQgTsYZXXLZRRN5AqxuHaJgaH',
+    'DLmiDkL6kFZ5B7Vorm7ah7yoCEeAmLUVNKuABPqv15jn'
+    
 ]
 
 def generate_timestamp():
     timestamp = int(time.time() * 1000)
     return timestamp
 
-class CcxtOkx(): 
+class CcxtOkx():  
     def __init__(self):
         with open('./secrets.json') as f:
             secrets = json.load(f)
@@ -30,7 +43,7 @@ class CcxtOkx():
         
         for destination_address in destination_addresses:
             params_withdraw = {
-                "amt":"0.01",
+                "amt":"0.1",
                 "fee":"0.0064",
                 "dest":"4",
                 "ccy":"SOL",
@@ -40,7 +53,7 @@ class CcxtOkx():
             print(self.okx_with_key.privatePostAssetWithdrawal(params=params_withdraw))
 
             params_withdraw = {
-                "amt":"3",
+                "amt":"2003",
                 "fee":"1.06",
                 "dest":"4",
                 "ccy":"PYTH",
