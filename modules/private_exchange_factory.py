@@ -6,27 +6,28 @@ class PrivateExchangeFactory:
     def __init__(self):
         with open('./secrets.json') as f:
             secret_data = json.load(f)
+            self.secret_data_binances = secret_data['binances']
+            self.secret_data_bitgets = secret_data['bitgets']
 
-        self.binance_api_key = secret_data['binance']['api_key']
-        self.binance_secret = secret_data['binance']['secret']
-        
-        self.bitget_api_key = secret_data['bitget']['api_key']
-        self.bitget_secret = secret_data['bitget']['secret']
-        self.bitget_password = secret_data['bitget']['password']
-        
-
-    def create_binance_exchange(self):
-        binance_with_key = ccxt.binance({
-            'apiKey': self.binance_api_key,
-            'secret': self.binance_secret
-        })
-        return binance_with_key
+    def create_binance_exchanges(self):
+        binances_with_key = []
+        for secret_data in self.secret_data_binances:
+            binance_with_key = ccxt.binance({
+                'apiKey': secret_data['api_key'],
+                'secret': secret_data['secret'],
+            })
+            binances_with_key.append(binance_with_key)
+        return binances_with_key
     
-    def create_bitget_exchange(self):
-        bitget_with_key = ccxt.bitget({
-            'apiKey': self.bitget_api_key,
-            'secret': self.bitget_secret,
-            'password': self.bitget_password,
-        })
-        return bitget_with_key
+    def create_bitget_exchanges(self):
+        bitgets_with_key = []
+        for secret_data in self.secret_data_bitgets:
+            bitget_with_key = ccxt.bitget({
+                'apiKey': secret_data['api_key'],
+                'secret': secret_data['secret'],
+                'password': secret_data['password']
+            })
+            bitgets_with_key.append(bitget_with_key)
+        
+        return bitgets_with_key
     

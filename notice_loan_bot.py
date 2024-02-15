@@ -13,25 +13,34 @@ class NoticeLoanBot():
         self.bithumb_notice_crawler = BithumbNoticeCrawler()
 
         self.private_exchange_factory = PrivateExchangeFactory()
-        self.private_binance = self.private_exchange_factory.create_binance_exchange()
-        self.private_bitget = self.private_exchange_factory.create_bitget_exchange()
+        self.private_binances = self.private_exchange_factory.create_binance_exchanges()
+        self.private_bitgets = self.private_exchange_factory.create_bitget_exchanges()
 
-        self.binance_loan_borrower = BinanceLoanBorrower(self.private_binance)
-        self.bitget_loan_borrower = BitgetLoanBorrower(self.private_bitget)
+        self.binance_loan_borrowers = []
+        self.bitget_loan_borrowers = []
+        for private_binance in self.private_binances:
+            self.binance_loan_borrowers.append(BinanceLoanBorrower(private_binance))
+
+        for private_bitget in self.private_bitgets:
+            self.bitget_loan_borrowers.append(BitgetLoanBorrower(private_bitget))
 
     def work(self):
         while True:
             symbols = self.upbit_notice_crawler.crawl_new_listing_symbols()
             if len(symbols) != 0:
-                self.binance_loan_borrower.on_new_coin_listing_detected(symbols)
-                self.bitget_loan_borrower.on_new_coin_listing_detected(symbols)
+                for binance_loan_borrower in self.binance_loan_borrowers:
+                    binance_loan_borrower.on_new_coin_listing_detected(symbols)
+                for bitget_loan_borrower in self.bitget_loan_borrowers:
+                    bitget_loan_borrower.on_new_coin_listing_detected(symbols)
             #print(datetime.datetime.now())
             symbols = self.bithumb_notice_crawler.crawl_new_listing_symbols()
             if len(symbols) != 0:
-                self.binance_loan_borrower.on_new_coin_listing_detected(symbols)
-                self.bitget_loan_borrower.on_new_coin_listing_detected(symbols)
+                for binance_loan_borrower in self.binance_loan_borrowers:
+                    binance_loan_borrower.on_new_coin_listing_detected(symbols)
+                for bitget_loan_borrower in self.bitget_loan_borrowers:
+                    bitget_loan_borrower.on_new_coin_listing_detected(symbols)
             #print(datetime.datetime.now())
-            #time.sleep(5)
+            time.sleep(5)
 
     
 if __name__ == '__main__': 

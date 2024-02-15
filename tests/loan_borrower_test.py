@@ -7,17 +7,35 @@ from modules.loan_borrower import *
 
 class CcxtTests(unittest.TestCase): 
     def setUp(self):
-        private_exchange_factory = PrivateExchangeFactory()
-        self.private_binance = private_exchange_factory.create_binance_exchange()
-        self.private_bitget = private_exchange_factory.create_bitget_exchange()
+        self.private_exchange_factory = PrivateExchangeFactory()
+        self.private_binances = self.private_exchange_factory.create_binance_exchanges()
+        self.private_bitgets = self.private_exchange_factory.create_bitget_exchanges()
 
+        self.binance_loan_borrowers = []
+        self.bitget_loan_borrowers = []
+        for private_binance in self.private_binances:
+            self.binance_loan_borrowers.append(BinanceLoanBorrower(private_binance))
+
+        for private_bitget in self.private_bitgets:
+            self.bitget_loan_borrowers.append(BitgetLoanBorrower(private_bitget))
+
+    @unittest.skip
     def test_binance_on_new_coin_listing_detected(self):
         loan_borrower = BinanceLoanBorrower(self.private_binance)
         loan_borrower.on_new_coin_listing_detected(["SLP"])
 
+    @unittest.skip
     def test_bitget_on_new_coin_listing_detected(self):
         loan_borrower = BitgetLoanBorrower(self.private_bitget)
         loan_borrower.on_new_coin_listing_detected(["IMX"])
+
+    def test_exchanges_on_new_coin_listing_detected(self):
+        symbols = ["APT"]
+        if len(symbols) != 0:
+            for binance_loan_borrower in self.binance_loan_borrowers:
+                binance_loan_borrower.on_new_coin_listing_detected(symbols)
+            for bitget_loan_borrower in self.bitget_loan_borrowers:
+                bitget_loan_borrower.on_new_coin_listing_detected(symbols)
     
 if __name__ == '__main__':  
     unittest.main()

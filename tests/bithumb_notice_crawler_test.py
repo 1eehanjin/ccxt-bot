@@ -16,6 +16,8 @@ class BithumbNoticeCrawlerTests(unittest.TestCase):
         for notice in notices:
             print(notice.id + " : " + notice.title)
 
+            
+
     def test_is_listing_notice(self):
         notices = self.bithumb_notice_crawler.crawl_notices()
         for notice in notices:
