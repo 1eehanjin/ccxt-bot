@@ -8,6 +8,7 @@ class PrivateExchangeFactory:
             secret_data = json.load(f)
             self.secret_data_binances = secret_data['binances']
             self.secret_data_bitgets = secret_data['bitgets']
+            self.secret_data_okxs = secret_data['okxs']
 
     def create_binance_exchanges(self):
         binances_with_key = []
