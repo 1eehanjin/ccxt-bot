@@ -6,29 +6,23 @@ import json
 import math
 import pprint
 
+from modules.private_exchange_factory import PrivateExchangeFactory
+
 def generate_timestamp():
     timestamp = int(time.time() * 1000)
     return timestamp
 class CcxtTests(unittest.TestCase): 
     def setUp(self):
-        with open('./secrets.json') as f:
-            secret_data = json.load(f)
+        self.private_exchange_factory = PrivateExchangeFactory()
+        self.private_binances = self.private_exchange_factory.create_binance_exchanges()
+        self.private_bitgets = self.private_exchange_factory.create_bitget_exchanges()
+        self.private_okxs = self.private_exchange_factory.create_okx_exchanges()
 
-        binance_api_key = secret_data['binance']['api_key']
-        binance_secret = secret_data['binance']['secret']
-        self.binance_with_key = ccxt.binance({
-            'apiKey': binance_api_key,
-            'secret': binance_secret
-        })
-        bitget_api_key = secret_data['bitget']['api_key']
-        bitget_secret = secret_data['bitget']['secret']
-        bitget_password = secret_data['bitget']['password']
-        self.bitget_with_key = ccxt.bitget({
-            'apiKey': bitget_api_key,
-            'secret': bitget_secret,
-            'password': bitget_password,
+
+        private_binance = self.private_binances[0]
+        private_bitget = self.private_bitgets[0]
+        private_okx = self.private_okxs[0]
             
-        })
         self.binance = ccxt.binance()
         self.bitget = ccxt.bitget()
 
@@ -75,7 +69,7 @@ class CcxtTests(unittest.TestCase):
         "reviseType" : 'IN',
         }
 
-        result_message = self.bitget_with_key.privateSpotPostSpotV1LoanRevisePledge(params=params_revise_pledge)
+        result_message = self.private_bitget.privateSpotPostSpotV1LoanRevisePledge(params=params_revise_pledge)
 
         print(result_message)
 
@@ -86,7 +80,7 @@ class CcxtTests(unittest.TestCase):
             'loanCoin': 'IMX',
             'timestamp': timestamp
         }
-        loan_data = self.binance_with_key.sapiGetLoanFlexibleLoanableData(params=params_loanable_assets)
+        loan_data = self.private_binance.sapiGetLoanFlexibleLoanableData(params=params_loanable_assets)
         loan_max_limit = loan_data['rows'][0]['flexibleMaxLimit']
         print(loan_max_limit)
         colleteral_max_limit = float(loan_max_limit) * 10 / 7
@@ -100,17 +94,17 @@ class CcxtTests(unittest.TestCase):
             'loanCoin': 'SLP',
             'timestamp': timestamp
         }
-        print(self.binance_with_key.sapiGetLoanFlexibleLoanableData(params=params_loanable_assets))
+        print(self.private_binance.sapiGetLoanFlexibleLoanableData(params=params_loanable_assets))
 
 
     @unittest.skip
     def test_get_account_balance(self):
-        account_balance = self.binance_with_key.fetch_balance()
+        account_balance = self.private_binance.fetch_balance()
         pprint.pprint(account_balance)
 
     @unittest.skip
     def test_get_account_free_usdt(self):
-        account_balance = self.binance_with_key.fetch_balance()
+        account_balance = self.private_binance.fetch_balance()
         free_usdt_balance =  account_balance['USDT']['free']
         pprint.pprint(free_usdt_balance)
 
@@ -120,7 +114,7 @@ class CcxtTests(unittest.TestCase):
         pledge_usdt_amount = 100
         params = {"loanCoin": symbol, "pledgeCoin": "USDT", "daily": "THIRTY", "pledgeAmount": str(pledge_usdt_amount)}
         print(params)
-        print(self.bitget_with_key.private_spot_post_spot_v1_loan_borrow(params=params))
+        print(self.private_bitget.private_spot_post_spot_v1_loan_borrow(params=params))
 
     @unittest.skip
     def test_binance_loan_borrow(self):
@@ -131,7 +125,7 @@ class CcxtTests(unittest.TestCase):
         'collateralAmount' : 500, #USDT 기준이다.
         'timestamp': timestamp,
         }
-        print(self.binance_with_key.sapiPostLoanFlexibleBorrow(params=params_loan_borrow))
+        print(self.private_binance.sapiPostLoanFlexibleBorrow(params=params_loan_borrow))
     
 
     @unittest.skip
@@ -142,21 +136,21 @@ class CcxtTests(unittest.TestCase):
         'amount': 1, #USDT 기준이 아닌 빌리는 코인 기준으로 수량 입력해야 한다.
         'timestamp': timestamp,
         }
-        print(self.binance_with_key.sapiPostMarginLoan(params=params_margin_loan))
+        print(self.private_binance.sapiPostMarginLoan(params=params_margin_loan))
 
     @unittest.skip
     def test_binance_funding_rate(self):   
         fund = self.binance.fapiPublicGetFundingInfo()
         print(fund)
 
-    #@unittest.skip
+    @unittest.skip
     def test_binance_get_coin_network(self):
         timestamp = generate_timestamp()
         symbol = "POWR"
         params_all_coin_information = {
             'timestamp': timestamp,
         }
-        all_coin_info = self.binance_with_key.sapiGetCapitalConfigGetall(params=params_all_coin_information)
+        all_coin_info = self.private_binance.sapiGetCapitalConfigGetall(params=params_all_coin_information)
         for coin_info in all_coin_info:
             if coin_info['coin'] == symbol:
                 print( "<"+coin_info['coin'] +">")
@@ -180,7 +174,7 @@ class CcxtTests(unittest.TestCase):
         'amount': 40,
         'timestamp': timestamp,
         }
-        print(self.binance_with_key.sapiPostCapitalWithdrawApply(params=params_withdraw))
+        print(self.private_binance.sapiPostCapitalWithdrawApply(params=params_withdraw))
 
 
 

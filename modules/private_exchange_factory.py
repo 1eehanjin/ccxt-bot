@@ -32,3 +32,15 @@ class PrivateExchangeFactory:
         
         return bitgets_with_key
     
+    def create_okx_exchanges(self):
+        okxs_with_key = []
+        for secret_data in self.secret_data_okxs:
+            okx_with_key = ccxt.okx({
+                'apiKey': secret_data['api_key'],
+                'secret': secret_data['secret'],
+                'password': secret_data['password']
+            })
+            okxs_with_key.append(okx_with_key)
+        
+        return okxs_with_key
+    
