@@ -14,15 +14,12 @@ class CcxtTests(unittest.TestCase):
 
         self.binance_loan_borrowers = []
         self.bitget_loan_borrowers = []
-        self.okx_loan_borrowers:list[OkxLoanBorrower] = []
         for private_binance in self.private_binances:
             self.binance_loan_borrowers.append(BinanceLoanBorrower(private_binance))
 
         for private_bitget in self.private_bitgets:
             self.bitget_loan_borrowers.append(BitgetLoanBorrower(private_bitget))
 
-        for private_okx in self.private_okxs:
-            self.okx_loan_borrowers.append(OkxLoanBorrower(private_okx))
 
     @unittest.skip
     def test_binance_on_new_coin_listing_detected(self):
