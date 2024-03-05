@@ -94,7 +94,7 @@ class ArbitrageFinder:
         gap_infos = []
 
         for gap_symbol in self.gap_symbols:
-            dump(yellow(gap_symbol))
+            #dump(yellow(gap_symbol))
             gap_combinations = self.generate_gap_combinations(gap_symbol)
 
             for gap_combination in gap_combinations:
@@ -161,7 +161,7 @@ class ArbitrageFinder:
         for id in self.ids:
             exchange = self.exchanges[id]
             self.tickers[id] = exchange.fetch_tickers()
-            dump(green(id), 'loaded', green(str(len(self.tickers[id].keys()))), 'markets')
+            #dump(green(id), 'loaded', green(str(len(self.tickers[id].keys()))), 'markets')
 
     def retrieve_arbitrable_symbols(self):
         allSymbols = [symbol.replace(":USDT", "") for id in self.ids for symbol in self.tickers[id].keys()]
@@ -203,7 +203,7 @@ class ArbitrageFinder:
         return GapInfo(symbol, sorted_gap_combination[0], sorted_gap_combination[1])     
         
     def perform_gap_action(self, gap_info):
-        self.dump_gap_info(gap_info)
+        #self.dump_gap_info(gap_info)
         gap_category = gap_info.get_category()
         if gap_category =="현선갭":
             previous_gap_exists = False
