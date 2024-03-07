@@ -247,7 +247,7 @@ class GapInfo:
         self.is_updated = True
         self.count = self.count + 1
     def is_match(self, another_gap_info):
-        if self.symbol == another_gap_info.symbol and self.exchange1_info['id'] == another_gap_info.exchange1_indo['id'] and self.exchange2_info['id'] == another_gap_info.exchange2_info['id']:
+        if self.symbol == another_gap_info.symbol and self.exchange1_info['id'] == another_gap_info.exchange1_info['id'] and self.exchange2_info['id'] == another_gap_info.exchange2_info['id']:
             return True
         else:
             return False

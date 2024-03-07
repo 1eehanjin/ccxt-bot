@@ -4,7 +4,7 @@ from modules.loan_borrower import *
 from modules.arbitrage_finder import *
 import modules.message_sender
 
-MIN_VOLUME = 50000
+MIN_VOLUME = 100000
 MIN_GAP = 1.02
 
 
