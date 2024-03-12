@@ -5,10 +5,6 @@ import json
 import pprint
 import requests
 
-def generate_timestamp():
-    timestamp = int(time.time() * 1000)
-    return timestamp
-
 class CcxtBithumb: 
     def __init__(self):
         with open('./secrets.json') as f:
@@ -33,7 +29,7 @@ class CcxtBithumb:
 
 
     def bithumb_sell(self):
-        result = self.bithumb_with_key.create_limit_sell_order(symbol="ETH/KRW",amount=0.0013, price=5319000)
+        result = self.bithumb_with_key.create_limit_sell_order(symbol="FLOW/KRW",amount=0.0013, price=5319000)
         print(result)
 
 

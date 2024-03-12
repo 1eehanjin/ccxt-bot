@@ -99,7 +99,7 @@ class BinanceLoanBorrower(AbstractLoanBorrower):
         'timestamp': timestamp,
         }
         print("바이낸스 loan" + str(params_loan_borrow))
-        result_message = self.exchange.sapiPostLoanFlexibleBorrow(params=params_loan_borrow)
+        result_message = self.exchange.sapiV2PostLoanFlexibleBorrow(params=params_loan_borrow)
         message_sender.send_telegram_message(result_message)
         self.add_colleteral(symbol, collateral_amount)
         
@@ -118,7 +118,7 @@ class BinanceLoanBorrower(AbstractLoanBorrower):
             'loanCoin': symbol,
             'timestamp': timestamp
         }
-        loan_data = self.exchange.sapiGetLoanFlexibleLoanableData(params=params_loanable_assets)
+        loan_data = self.exchange.sapiV2GetLoanFlexibleLoanableData(params=params_loanable_assets)
         loan_max_limit = loan_data['rows'][0]['flexibleMaxLimit']
         collateral_max_limit = float(loan_max_limit) * 10 / 7
         collateral_max_limit = math.floor(collateral_max_limit)

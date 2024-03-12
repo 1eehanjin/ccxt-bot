@@ -1,17 +1,14 @@
-# -*- coding: utf-8 -*-
-
-import os
-import sys
 import math
 import pprint
 import ccxt
 import time
 from itertools import combinations
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
 from modules.message_dumper import *
 
 class ArbitrageFinder:
-    #EXCEPT_SYMBOLS = ['ALT/USDT', 'ANT/USDT', 'BEAM/USDT', 'DEFI/USDT', 'FMC/USDT', 'FON/USDT', 'GMT Token/USDT', 'MDT/USDT', 'MULTI/USDT',  'VELO/USDT', 'XMR/USDT']
-
     
     EXCEPT_SYMBOLS_DICT = {
         "binance": ['XMR/USDT', 'MULTI/USDT','ANT/USDT'],
@@ -23,7 +20,10 @@ class ArbitrageFinder:
         "bitget": ['VELO/USDT', 'ALT/USDT'],
         "bitget_swap": [],
         "gateio": ['BTG/USDT', 'YFII/USDT'],
-        "gateio_swap": ['BTG/USDT', 'YFII/USDT']
+        "gateio_swap": ['BTG/USDT', 'YFII/USDT'],
+        "kucoin": [],
+        "kucoin_swap": []
+
 
     }
 
@@ -66,13 +66,20 @@ class ArbitrageFinder:
                     'defaultType': 'swap'
                 },
             }),
-            # "gateio" : ccxt.gateio(),
-            # "gateio_swap": ccxt.gateio(config={
-            #     'enableRateLimit': True,
-            #     'options': {
-            #         'defaultType': 'swap'
-            #     },
-            # })
+            "gateio" : ccxt.gateio(),
+            "gateio_swap": ccxt.gateio(config={
+                'enableRateLimit': True,
+                'options': {
+                    'defaultType': 'swap'
+                },
+            }),
+            "kucoin" : ccxt.kucoin(),
+            "kucoin_swap": ccxt.kucoin(config={
+                'enableRateLimit': True,
+                'options': {
+                    'defaultType': 'swap'
+                },
+            })
         }
         self.ids = self.exchanges.keys()
 
