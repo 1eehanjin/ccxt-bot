@@ -21,15 +21,15 @@ class CcxtTests(unittest.TestCase):
             self.bitget_loan_borrowers.append(BitgetLoanBorrower(private_bitget))
 
 
-    @unittest.skip
+    
     def test_binance_on_new_coin_listing_detected(self):
-        loan_borrower = BinanceLoanBorrower(self.private_binance)
-        loan_borrower.on_new_coin_listing_detected(["SLP"])
+        for binance_loan_borrower in self.binance_loan_borrowers:
+                binance_loan_borrower.on_new_coin_listing_detected(['SLP'])
 
     @unittest.skip
     def test_bitget_on_new_coin_listing_detected(self):
-        loan_borrower = BitgetLoanBorrower(self.private_bitget)
-        loan_borrower.on_new_coin_listing_detected(["IMX"])
+        for bitget_loan_borrower in self.bitget_loan_borrowers:
+                bitget_loan_borrower.on_new_coin_listing_detected(['IMX'])
 
     @unittest.skip
     def test_exchanges_on_new_coin_listing_detected(self):

@@ -1,4 +1,5 @@
 import time
+from modules.future_buyer import BinanceFutureBuyer
 from modules.private_exchange_factory import PrivateExchangeFactory
 from modules.loan_borrower import *
 from modules.notice_crawler import *
@@ -21,10 +22,16 @@ class NoticeLoanBot():
         for private_bitget in self.private_bitgets:
             self.bitget_loan_borrowers.append(BitgetLoanBorrower(private_bitget))
 
+        self.future_buy_binance = self.private_exchange_factory.create_future_buy_binance()
+        self.binance_future_buyer = BinanceFutureBuyer(self.future_buy_binance)
+
+
+
     def work(self):
         while True:
             symbols = self.upbit_notice_crawler.crawl_new_listing_symbols()
             if len(symbols) != 0:
+                self.binance_future_buyer.on_new_coin_listing_detected(symbols=symbols, money=50000)
                 for binance_loan_borrower in self.binance_loan_borrowers:
                     binance_loan_borrower.on_new_coin_listing_detected(symbols)
                 for bitget_loan_borrower in self.bitget_loan_borrowers:
@@ -32,6 +39,7 @@ class NoticeLoanBot():
             #print(datetime.datetime.now())
             symbols = self.bithumb_notice_crawler.crawl_new_listing_symbols()
             if len(symbols) != 0:
+                self.binance_future_buyer.on_new_coin_listing_detected(symbols=symbols, money=50000)
                 for binance_loan_borrower in self.binance_loan_borrowers:
                     binance_loan_borrower.on_new_coin_listing_detected(symbols)
                 for bitget_loan_borrower in self.bitget_loan_borrowers:

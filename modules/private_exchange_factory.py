@@ -5,10 +5,10 @@ import ccxt
 class PrivateExchangeFactory:
     def __init__(self):
         with open('./secrets.json') as f:
-            secret_data = json.load(f)
-            self.secret_data_binances = secret_data['binances']
-            self.secret_data_bitgets = secret_data['bitgets']
-            self.secret_data_okxs = secret_data['okxs']
+            self.secret_data = json.load(f)
+            self.secret_data_binances = self.secret_data['binances']
+            self.secret_data_bitgets = self.secret_data['bitgets']
+            self.secret_data_okxs = self.secret_data['okxs']
 
     def create_binance_exchanges(self):
         binances_with_key = []
@@ -43,4 +43,14 @@ class PrivateExchangeFactory:
             okxs_with_key.append(okx_with_key)
         
         return okxs_with_key
+    
+    def create_future_buy_binance(self):
+        future_buy_binance = ccxt.binance({
+            'apiKey': self.secret_data['future_buy_binance']['api_key'],
+            'secret': self.secret_data['future_buy_binance']['secret'],
+            'options': {
+                    'defaultType': 'swap'
+                }
+        })
+        return future_buy_binance
     
